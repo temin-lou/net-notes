@@ -17,13 +17,13 @@ sub get_dev_param() {
                 $mac = $1;
             }
             if ($mac ne "") {
-                print "dev_name=$dev_name\n";
+                print "\"dev_name\":\"$dev_name\",";
                 $mac =~ s/:/-/g;
-                print "mac=$mac\n";
+                print "\"mac\":\"$mac\",";
                 $hardware =~ /:\s(.*),/;
                 $hardware = $1;
                 $hardware =~ s/:/-/g;
-                print "hardware=$hardware\n";
+                print "\"hardware\":\"$hardware\",";
             }
 
             $mac = "";
@@ -39,16 +39,16 @@ sub get_br_param() {
         chomp;
         if ($_ =~ /(^.*br[0-9])/) {
             if ($flag) {
-                print "link_hw=";
+                print "\"link_hw\":\"";
                 print join('\\', @hw);
-                print "\n";
+                print "\",";
                 undef(@hw);
             }
             $link_br = $1;
             @per = split(/\s/); 
             $link_hw = pop @per;
             push @hw, $link_hw; 
-            print "link_br=$link_br\n";
+            print "\"link_br\":\"$link_br\",";
             $flag = 1;
         } else {
             if ($flag) {
@@ -57,8 +57,8 @@ sub get_br_param() {
             }
         }
     }
-    print "link_hw=";
+    print "\"link_hw\":";
     print join('\\', @hw);
-    print "\n";
+    print "\"";
     close(FH);
 }
