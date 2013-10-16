@@ -16,7 +16,7 @@ sub get_dev_param() {
             if(/(\w+\:\w+\:\w+\:\w+:\w+:\w+)/) {
                 $mac = $1;
             }
-            if($mac ne "") {
+            if ($mac ne "") {
                 print "dev_name=$dev_name\n";
                 $mac =~ s/:/-/g;
                 print "mac=$mac\n";
@@ -31,4 +31,34 @@ sub get_dev_param() {
     }
     close(FH);
 }
+sub get_br_param() {
+    $flag = 0;
 
+    open(FH, "brctl show |");
+    while(<FH>) {
+        chomp;
+        if ($_ =~ /(^.*br[0-9])/) {
+            if ($flag) {
+                print "link_hw=";
+                print join('\\', @hw);
+                print "\n";
+                undef(@hw);
+            }
+            $link_br = $1;
+            @per = split(/\s/); 
+            $link_hw = pop @per;
+            push @hw, $link_hw; 
+            print "link_br=$link_br\n";
+            $flag = 1;
+        } else {
+            if ($flag) {
+                $_ =~ s/^\s+//;
+                push @hw, $_;
+            }
+        }
+    }
+    print "link_hw=";
+    print join('\\', @hw);
+    print "\n";
+    close(FH);
+}
