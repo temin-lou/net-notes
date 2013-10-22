@@ -1,0 +1,17 @@
+[user]
+    name  = Temin Lou
+    email = temin.lou@gmail.com
+[color]
+    ui = auto
+[alias]
+    co = checkout 
+    ds = diff --staged
+    st = status -sb
+    br = branch -a
+    ls = log --pretty=format:'%C(yellow)%h %C(blue)%ad %C(red)%d %C(reset)%s %C(green) [%cn]' --decorate --date=short
+    undo = reset --soft HEAD^
+    type = cat-file -t
+    dump = cat-file -p
+    graph = log --graph --pretty=format:'%C(yellow)%h %C(blue)%d %C(reset)%s %C(white)%an, %ar%C(reset)'
+    latest = for-each-ref --sort=-committerdate --format=\"%(committername)@%(refname:short) [%(committerdate:short)] %(contents)\"
+    standup = log --since '1 day ago' --oneline --author (YOUREMAIL)
