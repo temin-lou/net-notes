@@ -15,3 +15,5 @@
     graph = log --graph --pretty=format:'%C(yellow)%h %C(blue)%d %C(reset)%s %C(white)%an, %ar%C(reset)'
     latest = for-each-ref --sort=-committerdate --format=\"%(committername)@%(refname:short) [%(committerdate:short)] %(contents)\"
     standup = log --since '1 day ago' --oneline --author (YOUREMAIL)
+[push]
+	default = simple
