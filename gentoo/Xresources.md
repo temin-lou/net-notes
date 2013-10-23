@@ -1,0 +1,74 @@
+# 系统字体支持
+     emerge -av wqy-zenhei ttf-bitstream-vera
+     eselect fontconfig enable 44-wqy-zenhei.conf
+# Xresources文件
+xrdb Xresources  #配置生效
+
+    ! x config
+    
+    Xft.rgba: rgb
+    Xft.hinting: true
+    Xft.antialias: true
+    Xcursor.theme: DMZ-White
+    Xft.hintstyle: hintslight
+    
+    
+    ! xterm config
+    
+    ! general settings
+    xterm*termName: xterm-256color
+    xterm*geometry: 110x58
+    xterm*saveLines: 1024
+    xterm*scrollBar: false
+    xterm*loginshell: false
+    xterm*background: black
+    xterm*foreground: gray
+    xterm*cursorBlink: false
+    xterm*bellIsUrgent: true
+    
+    ! fonts and encoding
+    xterm*utf8: true
+    xterm*locale: true
+    xterm*utf8Title: true
+    xterm*renderFont: true
+    xterm*scaleHeight: 1.0
+    xterm*preeditType: Root
+    !xterm*xftAntialias: true
+    xterm*faceSize:8
+    xterm*faceName:Bitstream Vera Sans Mono 
+    xterm*faceNameDoublesize:WenQuanYi Zen Hei 
+    xterm*cjk_width:true 
+    XTerm*inputMethod: ibus
+    
+    ! trim trailing spaces
+    xterm*trimSelection: true
+    
+    ! fix alt-key inputting
+    xterm*eightBitInput: true 
+    xterm*metaSendsEscape: false 
+    
+    ! copy and paste with clipboard
+    !xterm*translations: #override \
+    !        Ctrl Shift <KeyPress> C: copy-selection(CLIPBOARD) \n\
+    !        Ctrl Shift <KeyPress> V: insert-selection(CLIPBOARD)
+    
+    ! allow selecting email/url by double-click
+    xterm*charClass: 33:48,37-38:48,45-47:48,64:48,58:48,126:48,61:48,63:48,43:48,35:48
+    
+    ! tango color scheme
+    xterm*color0:  #1e1e1e
+    xterm*color1:  #cc0000
+    xterm*color2:  #4e9a06
+    xterm*color3:  #c4a000
+    xterm*color4:  #3465a4
+    xterm*color5:  #75507b
+    xterm*color6:  #0b939b
+    xterm*color7:  #d3d7cf
+    xterm*color8:  #555753
+    xterm*color9:  #ef2929
+    xterm*color10: #8ae234
+    xterm*color11: #fce94f
+    xterm*color12: #729fcf
+    xterm*color13: #ad7fa8
+    xterm*color14: #00f5e9
+    xterm*color15: #eeeeec
