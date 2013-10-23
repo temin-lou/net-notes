@@ -9,6 +9,7 @@ git 命令，用法，记录
 
 # gentoo directory
 gentoo 相关配置方法，用法收集
+       系统相关配置方法
 
 # perl-codes
 perl 简单代码
