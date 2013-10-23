@@ -38,7 +38,7 @@ xrdb Xresources  #配置生效
     xterm*faceName:Bitstream Vera Sans Mono 
     xterm*faceNameDoublesize:WenQuanYi Zen Hei 
     xterm*cjk_width:true 
-    XTerm*inputMethod: ibus
+    XTerm*inputMethod:SCIM
     
     ! trim trailing spaces
     xterm*trimSelection: true
