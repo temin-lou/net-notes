@@ -27,4 +27,9 @@ topquark@yeah.net
 # gravatar 
 tingtongor@sina.com  wp
 topquark@yeah.net
+
+# git 
+louqinghui git
+louqh      git
+tingtongor git
     
