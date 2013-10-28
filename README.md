@@ -23,4 +23,8 @@ spicy 用法，命令
 # mail
 tingtongor@sina.com
 topquark@yeah.net
+
+# gravatar 
+tingtongor@sina.com  wp
+topquark@yeah.net
     
