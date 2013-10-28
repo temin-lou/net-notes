@@ -29,7 +29,7 @@ tingtongor@sina.com  wp
 topquark@yeah.net
 
 # git 
-louqinghui git
-louqh      git
-tingtongor git
+louqinghui git    web
+louqh      git    all
+tingtongor git    test
     
