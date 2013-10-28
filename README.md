@@ -19,4 +19,8 @@ tmux 配置文件及用法
 
 # spicy
 spicy 用法，命令
+
+# mail
+tingtongor@sina.com
+topquark@yeah.net
     
