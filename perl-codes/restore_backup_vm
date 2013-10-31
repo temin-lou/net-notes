@@ -1,0 +1,98 @@
+#!/usr/bin/perl -ws
+
+my $back_host; 
+my $find = 0;
+my $full_path;
+my $back_path;
+my $instance_path;
+sub search_subdir;
+
+sub do_restore_vm($)
+{
+    my $inst = shift;
+    my $back;
+    
+
+    `mkdir -p $instance_path/$inst`;
+    open(TP, "tail -1 $full_path/backup-list |");
+    while(<TP>) {
+        chomp;
+        $back = $_;
+    }
+    close(TP);
+    $back =~ /(back.*?),/;
+    print "cp -r $full_path/$1/* $instance_path/$inst\n";
+    #print "$1, $back, $inst\n";
+}
+sub get_vm_list() {
+    open(FH, "cat vm.list |");
+    while(<FH>) {
+        chomp;
+        if (/i-.*/) {
+            $find = 0;
+            search_subdir($back_path, $_);
+            if ($find == 1 ) {
+                print "start restore $_ instance...\n";
+                $full_path =~ /$back_path\/(.*)/;
+                do_restore_vm ($1);
+            } else {
+                print "not find $_ instance. \n";
+            }
+        }
+    }
+    close(FH);
+}
+
+sub search_subdir() {
+    my $path = shift;
+    my $search = shift;
+    my @entries=();
+
+    opendir (DIR, $path) or die("Can't open $path: $!\n");
+    @entries = readdir(DIR);
+    closedir DIR;
+    foreach (@entries) {
+        next if /^\.|\.$/;
+        if (-d "$path/$_") {
+            if (/$search/) {
+                $find = 1;
+                $full_path = "$path/$_";
+            }
+            if ($find == 0) { 
+                search_subdir("$path/$_", $search);
+            }
+        }
+    }
+}
+
+sub get_conf() {
+    open(FH, "cat /etc/eucalyptus/eucalyptus.conf |");
+    while(<FH>) {
+        chomp;
+        next if /^#/; 
+        if (/BACK_HOST/) {
+            /\=\"(.+)\"/;
+            $back_host = $1;
+        }
+        if (/BACKUP_PATH/) {
+            /\=\"(.+)\"/;
+            $back_path = $1;
+        }
+        if (/INSTANCE_PATH/) {
+            /\=\"(.+)\"/;
+            $instance_path = $1;
+        }
+ 
+    }
+    close(FH);
+}
+
+get_conf();
+if ($back_host eq "STANDBY") {
+    print $back_host;
+    exit 0;
+}
+#print $back_host, $instance_path;
+get_vm_list();
+exit 0;
+
