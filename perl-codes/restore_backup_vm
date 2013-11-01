@@ -1,4 +1,7 @@
-#!/usr/bin/perl -ws
+#!/usr/bin/perl -w
+
+use strict;
+use POSIX 'setsid';
 
 my $back_host; 
 my $find = 0;
@@ -21,11 +24,13 @@ sub do_restore_vm($)
     }
     close(TP);
     $back =~ /(back.*?),/;
-    print "cp -r $full_path/$1/* $instance_path/$inst\n";
-    #print "$1, $back, $inst\n";
+    `cp -r $full_path/$1/* $instance_path/$inst`;
+    `touch  $instance_path/$inst/console.log`;
+    `chown -R eucalyptus:eucalyptus $instance_path`;
+    `virsh define  $instance_path/$inst/libvirt.xml`;
 }
 sub get_vm_list() {
-    open(FH, "cat vm.list |");
+    open(FH, "cat /root/backup/vm.list |")or die("Can't open vm.list: $!\n");
     while(<FH>) {
         chomp;
         if (/i-.*/) {
@@ -87,12 +92,83 @@ sub get_conf() {
     close(FH);
 }
 
-get_conf();
-if ($back_host eq "STANDBY") {
-    print $back_host;
-    exit 0;
+sub do_status() {
+    my $pidfile;
+    my $pid;
+    if (open($pidfile, "<", "/var/run/restore_backup_vm.pid")) {
+        $pid = <$pidfile>;
+        close($pidfile);
+        if ($pid =~ /\d/) {
+            open ($pidfile, "ls /proc | grep $pid |"); 
+            my $exist = <$pidfile>;
+            close($pidfile);
+            if(defined($exist)) {
+                print "restore_backup_vm is running, exit!\n";
+                exit;
+            } 
+        } else {
+            print "backup complete, exit!\n";
+            exit;
+        }
+    }
 }
-#print $back_host, $instance_path;
-get_vm_list();
-exit 0;
+# create daemon process
+sub become_daemon {
+    die "Can't fork" unless defined (my $child = fork);
+    exit 0 if $child;
+    setsid();
+    close STDIN;
+    close STDOUT;
+    close STDERR;
 
+    open STDIN, '/var/log/restore.log';
+    open STDOUT, '>/var/log/restore.log';
+    open STDERR, '>/var/log/restore.log';
+    chdir '/';
+    umask(0);
+    $ENV{PATH} = "/bin:/sbin:/usr/bin:/usr/sbin";
+    $SIG{CHLD} = 'IGNORE';
+
+    return $$;
+}
+# start main loop.
+#------------------------------
+#&sudo($USER, $GROUP);
+&do_status();
+&become_daemon();
+#------------------------------
+my $pid = fork;
+my $pidfile;
+if ($pid == 0) {
+    open($pidfile, ">", "/var/run/restore_backup_vm.pid");
+    print $pidfile $$;
+    close($pidfile);
+    while(1) {
+        sleep 10;
+        get_conf();
+        if ($back_host eq "STANDBY") {
+            print "NC is running $back_host mode!\n";
+            next;
+        } else {
+            get_vm_list();
+            open($pidfile, ">", "/var/run/restore_backup_vm.pid");
+            print $pidfile "completed";
+            close($pidfile);
+            `service eucalyptus-nc start`;
+            exit;
+        }
+    }
+}
+exit;
+
+# main end
+
+# function to change user and group
+sub sudo {
+    my ($user, $group) = @_;
+    my $uid = (getpwnam($user))[2];
+    my $gid = (getgrnam($group))[2];
+    ($(, $)) = ($gid, "$gid $gid");
+    ($<, $>) = ($uid, $uid);
+}
+__END__
