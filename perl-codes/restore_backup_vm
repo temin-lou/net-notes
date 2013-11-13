@@ -30,7 +30,7 @@ sub do_restore_vm($)
     `virsh define  $instance_path/$inst/libvirt.xml`;
 }
 sub get_vm_list() {
-    open(FH, "cat /root/backup/vm.list |")or die("Can't open vm.list: $!\n");
+    open(FH, "cat /tmp/vm.list |")or die("Can't open vm.list: $!\n");
     while(<FH>) {
         chomp;
         if (/i-.*/) {

@@ -29,3 +29,4 @@ Create git server
         git remote add origin git@server.ip:newproject.git
         git push origin master
 
+# git
