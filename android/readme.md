@@ -11,6 +11,8 @@ Bus 001 Device 006: ID 04e8:6860 Samsung Electronics Co., Ltd GT-I9100 Phone [Ga
 然后在/etc/udev/rules.d/下创建一个配置文件: 70-android.rules
 文件里添加如下配置参数:
 
-SUBSYSTEM=="usb", SYSFS{"High Tech Computer Corp."}=="0bb4", MODE="0666"
+SUBSYSTEM=="usb", SYSFS{"High Tech Computer Corp."}=="04e8", MODE="0666"
 /etc/init.d/udev restart
-    
+
+下载adt-bundle-linux-x86_64-20131030.zip包，其中包括eclipse和sdk，
+通过指定sdk就可以开发android程序，下载android-ndk包可以用ndk开发。
