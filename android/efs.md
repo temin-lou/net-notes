@@ -1,4 +1,5 @@
 # backup
+http://forum.xda-developers.com/showthread.php?t=1922473
 
     adb shell
     su
