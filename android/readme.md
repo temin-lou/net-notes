@@ -19,7 +19,10 @@ SUBSYSTEM=="usb", SYSFS{"High Tech Computer Corp."}=="04e8", MODE="0666"
 
 # android 源代码下载
 
-    mkdir ~/bin && curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && chmod a+x ~/bin/repo
+    mkdir ~/bin 
+    //curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/bin/repo 
+    curl https://dl-ssl.google.com/dl/googlesource/git-repo/repo
+    chmod a+x ~/bin/repo
     export PATH=~/bin:$PATH
     mkdir ~/android
     cd ~/android
