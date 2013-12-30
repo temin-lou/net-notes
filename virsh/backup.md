@@ -4,3 +4,9 @@
     qemu-img snapshot -c tag1 disk
     qemu-img convert -c -f qcow2 -t none -O qcow2 -s tag1 disk backupfile
     qemu-img snapshot -d tag1 disk
+
+#删除快照
+    外置式快照删除
+
+    virsh snapshot-list domain
+    virsh snapshot-delete --domain i-447F0802 backup-timestamp --metadata
