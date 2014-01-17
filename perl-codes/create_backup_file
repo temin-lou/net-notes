@@ -1,0 +1,253 @@
+#!/usr/bin/perl
+
+use diagnostics;
+use warnings; 
+use sigtrap;
+use strict;
+use English; # for descriptive predefined var names
+use Data::Dumper; # for debugging: print Dumper($var)
+use Getopt::Long;
+
+my $instance_path = "";
+my $backup_path = "";
+my $qemu_img = "";
+my $cmd = "";
+my $backup_id = "";
+my $local_disk = "";
+my $next_id = "";
+my $rc;
+my $local_disk_path = "";
+my $instance = "";
+
+# get queue info 
+sub get_queue_info
+{
+    my ($inst, $bk_id) = @_;
+    my $hostname;
+    my $port;
+    my $ip;
+    my $username;
+    my $passwd;
+    my $queue = "queue.backup.complete";
+    #my $queue = "queue.instance.runsucc.test";
+
+    open(TP, "cat /etc/descRes.conf |");
+    while(<TP>) {
+        chomp;
+        if (/hostname/) {
+            /\=(.+)/;
+            chomp $1;
+            $hostname = $1;
+            $hostname =~ s/^ +//;
+        }
+        if (/port/) {
+            /\=(.+)/;
+            chomp $1;
+            $port = $1;
+            $port =~ s/^ +//;
+        }
+        if (/localhost/) {
+            /\=(.+)/;
+            chomp $1;
+            $ip = $1;
+            $ip =~ s/^ +//;
+        }
+        if (/username/) {
+            /\=(.+)/;
+            chomp $1;
+            $username = $1;
+            $username =~ s/^ +//;
+        }
+        if (/password/) {
+            /\=(.+)/;
+            chomp $1;
+            $passwd = $1;
+            $passwd =~ s/^ +//;
+        }
+    }
+    close(TP);
+    my $msg = "\\\{\\\"ncip\\\":\\\"$ip\\\",\\\"instanceId\\\":\\\"$inst\\\",\\\"backupId\\\":\\\"$bk_id\\\",\\\"status\\\":\\\"complete\\\"\\\}";
+    print $msg;
+    `/usr/share/eucalyptus/sendq $hostname $port $username $passwd $queue $msg`;
+}
+
+# do backup prev 
+sub do_prev_backup
+{
+    my ($inst, $i_path, $bk_path, $bk_id) = @_;
+
+    my $prev_disk = "";
+    `mkdir -p $bk_path/$bk_id`;
+    `mkdir -p $bk_path/$bk_id/local_disk`;
+    if($bk_id ~~ "base") {
+        print "$i_path, $bk_id, $bk_path\n";
+        `cp $i_path/libvirt.xml $bk_path/$bk_id`;
+        `cp $i_path/console.log $bk_path/$bk_id`;
+        `cp $i_path/instance-checkpoint $bk_path/$bk_id`;
+        `cp $i_path/kernel $bk_path/$bk_id`;
+        `cp $i_path/ramdisk $bk_path/$bk_id`;
+        
+        $prev_disk = "$bk_path/$bk_id/libvirt.xml";
+        return $prev_disk;
+    }
+
+    my $prev = `virsh dumpxml $inst | grep "<source file="`;
+    my $xml = `virsh dumpxml $inst`;
+    
+    $prev_disk = "$bk_path/$bk_id/libvirt.xml";
+    open(FH, ">", "$bk_path/$bk_id/libvirt.xml")
+        or die "cannot open  libvirt.xml: $!";
+    print FH $xml;
+    close FH;
+    `cp $bk_path/$bk_id/libvirt.xml $i_path/`;
+
+    return $prev_disk;
+}
+
+# do backup 
+sub do_backup
+{
+    my ($prev_path, $bk_path, $bk_id) = @_;
+
+    my $l_disk_path = "";
+    open(XML, "cat $prev_path | grep \"<source file='\" |") 
+        or die "not open libvirt.xml:$!\n";
+    while (<XML>) {
+        chomp;
+        /<source file='(.*)'\/>/;
+        my $src_path = $1;
+        $src_path =~ m!^(.*)/([^/]*)$!;
+        my $src_name = $2;
+        if($src_name =~ /disk/) {
+            #print "dd if=$src_path of=$bk_path/$bk_id/$src_name\n";
+            `dd if=$src_path of=$bk_path/$bk_id/$src_name`;
+        } else {
+            #print "dd if=$src_path of=$bk_path/$bk_id/local_disk/$src_name\n";
+            `dd if=$src_path of=$bk_path/$bk_id/local_disk/$src_name`;
+            $local_disk_path = $1;
+        }
+    }
+    close XML;
+}
+
+# do backup 
+sub do_merger
+{
+    my $rebase;
+    my @list;
+    my $count;
+    my $snapshot;
+
+    opendir(DIR, $instance_path) || exit;
+    my @all_disk = readdir(DIR);
+    closedir (DIR);
+
+    opendir(DIR, $local_disk_path) || exit;
+    my @all_local = readdir(DIR);
+    closedir (DIR);
+    
+    my @list_disk = grep(/^disk\..*/, sort(@all_disk));
+    my @list_local = grep(/^vol-$instance.*/, sort(@all_local));
+
+    print join("\n", @list_disk);
+    print "\n";
+    print join("\n", @list_local);
+    print "\n";
+    $count = @list_disk;
+    if($count > 3) {
+        print "$count\n";
+        @list = @list_disk;
+        shift @list;
+        $rebase = shift @list;
+        $rebase =~ /disk\.(.*)/;
+        $snapshot = $1;
+        my $snapshot_prev = 
+        `qemu-img info $instance_path/disk.$snapshot | grep "backing file:"`;  
+        $snapshot_prev =~ /(backing file:)(.*)/;
+        $snapshot_prev = $2;
+        $snapshot_prev =~ s/ //g;
+        $snapshot_prev =~ /disk\.(.*)/;
+        $snapshot_prev = $1;
+        print "qemu-img rebase -b $instance_path/disk $instance_path/$rebase\n";
+        print "virsh snapshot-delete $instance $snapshot_prev --metadata\n";
+        `qemu-img rebase -b $instance_path/disk $instance_path/$rebase`;
+        `virsh snapshot-delete $instance $snapshot_prev --metadata`;
+        print "rm -f $instance_path/$snapshot_prev\n";
+        `rm -f $instance_path/$snapshot_prev`;
+    }
+    $count = @list_local;
+    if($count > 3) {
+        my @l_base = grep(/^vol-$instance-vd\w$/, @list_local);
+        my $l_disk_base;
+        $count = @l_base;
+        foreach $l_disk_base (sort @l_base ) 
+        { 
+            my @base_disk = grep(/$l_disk_base.*/, @list_local);
+            $count = @base_disk;
+            print "$count, $l_disk_base\n";
+            if($count > 4) {
+                my $local_prev = 
+                `qemu-img info $local_disk_path/$l_disk_base.$snapshot | grep "backing file:"`;  
+                $local_prev =~ /(backing file:)(.*)/;
+                $local_prev = $2;
+                $local_prev =~ s/ //g;
+                print "qemu-img rebase -b $local_disk_path/$l_disk_base $local_disk_path/$l_disk_base.$snapshot\n";
+                `qemu-img rebase -b $local_disk_path/$l_disk_base $local_disk_path/$l_disk_base.$snapshot`;
+                print "rm -f $local_prev\n";
+                `rm -f $local_prev`;
+            }
+        }
+    }
+}
+# do backup file 
+sub do_bkfile
+{
+    my ($bk_id, $bk_path, $prev) = @_;
+    my $bk_file = "$bk_path/backup-list";
+
+    print "$bk_file, $bk_id, $prev\n";
+
+    `sed -i "s/PREV/$prev/g" $bk_file`;
+}
+
+if ( -x "/usr/bin/qemu-img" ) {
+    $qemu_img = "/usr/bin/qemu-img";
+} else {
+    $qemu_img = "qemu-img";
+}
+
+# deal with command-line parameters
+GetOptions('instance=s'       => \$instance_path,
+           'backup_path=s'    => \$backup_path,
+           'backup_id=s'      => \$backup_id,
+           'local_disk=s'     => \$local_disk,
+           'next_id=s'        => \$next_id
+		   ) or exit (1);
+exit(1) if $instance_path ~~ "";
+exit(1) if $backup_path ~~ "";
+exit(1) if $local_disk ~~ "";
+exit(1) if $backup_id ~~ "";
+exit(1) if $next_id ~~ "";
+#print $qemu_img, $instance_path, $backup_path;
+
+chomp $instance_path;
+chomp $backup_path;
+chomp $local_disk;
+chomp $backup_id;
+
+$instance_path =~ /(i-.*)/;
+$instance = $1;
+
+# backup all files
+my ($bk_prev, $bk_l_disk) = do_prev_backup($instance, $instance_path, $backup_path, $backup_id);
+print "virsh snapshot-create-as $instance $next_id --disk-only\n";
+`virsh snapshot-create-as $instance $next_id --disk-only`;
+$rc = $?;
+if($rc == 0 ) {
+    do_backup($bk_prev, $backup_path, $backup_id);
+    do_merger();
+    do_bkfile($backup_id, $backup_path, $bk_prev);
+    `chown -R eucalyptus:eucalyptus $backup_path`;
+    get_queue_info ($instance, $backup_id);
+}
+
