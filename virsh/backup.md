@@ -10,3 +10,9 @@
 
     virsh snapshot-list domain
     virsh snapshot-delete --domain i-447F0802 backup-timestamp --metadata
+
+#挂载qcow2文件
+    挂载本地qcow2文件
+
+    qemu-nbd -c /dev/nbd0 file.qcow2
+    mount /dev/nbd0p1 /mnt
