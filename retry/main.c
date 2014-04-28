@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#define TOTAL_RETRIES 3
+#define TOTAL_RETRIES 30
 #define FIRST_TIMEOUT 1
 #define OK            0
 #define ERROR         1
@@ -16,7 +16,7 @@ int do_scan_port (const char *ip, const char *port)
     struct addrinfo *rp;
 
     addr.ai_family = AF_INET;
-    addr.ai_socktype = SOCK_DGRAM;
+    addr.ai_socktype = SOCK_STREAM;
     addr.ai_flags = 0;
     addr.ai_protocol = 0;
     getaddrinfo(ip, port, &addr, &rp);
@@ -26,7 +26,8 @@ int do_scan_port (const char *ip, const char *port)
         return ERROR;
     }
 
-    if(connect(s, rp->ai_addr, rp->ai_addrlen) == -1){
+    if(connect(s, rp->ai_addr, rp->ai_addrlen) < 0){
+        fprintf(stderr, "do_scan_port(): connect error\n");
         close(s);
         freeaddrinfo(rp);
         return ERROR;
@@ -43,7 +44,6 @@ int main(int argc, char **argv)
     int rc = ERROR;
     char *ip = "10.10.12.195";
     char *port = "6550";
-
     
     do {
         rc = do_scan_port (ip, port); /* do it */
