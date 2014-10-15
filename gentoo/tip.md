@@ -9,3 +9,5 @@
 
 # cu命令
     uucp 在 gentoo 的taylor-uucp包里
+
+    awk '{print $8}'  取出一列
