@@ -31,3 +31,4 @@ Create git server
 
 # git
         git checkout -- rm.file
+        git checkout -b branch_name tag_name
