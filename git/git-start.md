@@ -30,3 +30,4 @@ Create git server
         git push origin master
 
 # git
+        git checkout -- rm.file
