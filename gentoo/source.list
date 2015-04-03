@@ -1,0 +1,19 @@
+# 
+#deb http://cdn.debian.net/debian/ wheezy main
+#deb-src http://cdn.debian.net/debian/ wheezy main
+
+deb http://mirrors.sohu.com/debian/ wheezy main non-free contrib
+deb http://mirrors.sohu.com/debian-security wheezy/updates main non-free contrib
+deb-src http://mirrors.sohu.com/debian/ wheezy main non-free contrib
+deb-src http://mirrors.sohu.com/debian-security wheezy/updates main non-free contrib
+
+#deb http://security.debian.org/ wheezy/updates main
+#deb-src http://security.debian.org/ wheezy/updates main
+
+# wheezy-updates, previously known as 'volatile'
+#deb http://mirrors.sohu.com/debian/ wheezy-updates main
+#deb-src http://mirrors.sohu.com/debian/ wheezy-updates main
+
+# wheezy-updates, previously known as 'volatile'
+#deb http://cdn.debian.net/debian/ wheezy-updates main
+#deb-src http://cdn.debian.net/debian/ wheezy-updates main
