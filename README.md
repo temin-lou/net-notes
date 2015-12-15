@@ -31,6 +31,7 @@
  tingtongor@sina.com
  topquark@yeah.net yeah11
  bitcon@126.com M
+ picocoin@sina.com   mxxl@xxxqq    
 
 # gravatar 
 
