@@ -58,7 +58,7 @@
     https://deepbit.net/account
 
 # wallet
-    picocoin@sina.com   wallet.c35
+    picocoin@sina.com   wallet.c35_123q
     17yLoi26zhoeDu6tLYWtJkJnffTur2ma4p
 
 
