@@ -57,4 +57,8 @@
     https://coinad.com/?a=View_Ads
     https://deepbit.net/account
 
+# wallet
+    picocoin@sina.com   wallet.c35
+    17yLoi26zhoeDu6tLYWtJkJnffTur2ma4p
+
 
