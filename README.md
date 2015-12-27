@@ -31,6 +31,7 @@
  tingtongor@sina.com
  topquark@yeah.net yeah11
  bitcon@126.com M
+ picocoin@sina.com   mxxl@xxxqq    
 
 # gravatar 
 
@@ -55,5 +56,14 @@
     1DzQZ5D8sQ4HJFmhQZ1LaAX5PHw5aYG1yP paper
     https://coinad.com/?a=View_Ads
     https://deepbit.net/account
+
+# wallet
+
+    picocoin@sina.com   wallet.c35_123q
+    97d4f5e4-148b-4aba-85e4-5df03f16473c
+    17yLoi26zhoeDu6tLYWtJkJnffTur2ma4p
+    
+# miner
+    fish2man    miner2cpu   sina
 
 
