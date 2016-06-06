@@ -1,8 +1,9 @@
 /*
- * gcc -o invert-binary-tree invert-binary-tree.c
+ * gcc -lm -o invert-binary-tree invert-binary-tree.c
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 struct TreeNode {
@@ -39,18 +40,60 @@ void printTree( struct TreeNode *root)
     printTree( root->left );
     printTree( root->right);
 }
+
 void invert_binary_tree(struct TreeNode *root)
 {
     struct TreeNode *p, *tmp;
 
     if(!root)return;
     p = root;
+    if(p->left)invert_binary_tree(p->left);
+    if(p->right)invert_binary_tree(p->right);
     tmp = p->left;
     p->left  = p->right;
     p->right = tmp;
 
-    invert_binary_tree(p->left);
-    invert_binary_tree(p->right);
+}
+
+int HeightOfTree(struct TreeNode *root)
+{
+    int h;
+    struct TreeNode *p;
+
+    h = 0;
+    p = root;
+    while (p != NULL) {
+        h++;
+        p = p->left;
+    }
+    return (h - 1);
+}
+
+int countNodes(struct TreeNode *root)
+{
+    struct TreeNode *p;
+    int n, h, rh;
+
+    if(root == NULL)return 0;
+    h = HeightOfTree(root);
+    p = root;
+    if( p->right == NULL ) {
+        if (p->left == NULL){
+            return 1;
+        } else {
+            return 2;
+        }
+    } else {
+        rh = HeightOfTree(p->right);
+    }
+
+    n = 0;
+    if(rh == (h - 1)) {
+        n = pow(2, h) + countNodes(p->right);
+    } else {
+        n = pow(2, (h-1)) + countNodes(p->left);
+    }
+    return n;
 }
 
 int main(int argc, char **argv)
