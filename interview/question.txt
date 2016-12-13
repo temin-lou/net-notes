@@ -10,13 +10,103 @@
   大部分对象都还需要继续进行写操作会产生大量的分页错误，得不偿失。所以COW高效的情况只是在复制新对象之后，
   在一小部分的内存分页上进行写操作。
 2)可重入和线程安全的区别？
-3)解释断错误发生的过程？
+3)解释段错误发生的过程？
+ 1.用户程序要访问的一个VA,经MMU检查无权访问。
+ 2.MMU产生一个异常,CPU从用户模式切换到特权模式,跳转到内核代码中执行异常服务程序。
+ 3.内核把这个异常解释为段错误,把引发异常的进程终止掉
 4)简述Linux创建子进程的过程？
+  Linux中一般进程都是由现有的一个进程创建的，也就是我们所说的父进程，子进程。
+  具体的创建是通过fork()实现的。下面就让我们一起了解一下0.11核心中fork()的大体工作过程：
+  1）在内存中申请一页内存存放进程控制块task_struct，并返回进程号nr，
+     并在task数组的nr处存放task_struct的指针，还要将task的当前指针current指到nr处；
+  2）将父进程的task_struct的内容复制到新进程的task_struct中作为模版
+  3）对task_struct中的信息进行修改，主要进行一下工作：设置父进程、清除信号位图、时间片、运行时间、
+     根据当前环境设置tss（内核态指针esp0指向task_struct所在页的顶端）、
+     设置LDT的选择子等(根据nr指向GDT中相应的ldt描述符)。
+  4）设置新进程的代码段、数据段的基地址和段长：更新task_struct中的代码开始地址：进程号（nr）×64M，
+     更新task_struct中局部描述符表中的代码段和数据段描述符。
+  5）复制父进程的页表目录项和页表：在页目录表中，复制父进程的页表目录项，目的地址由新进程的线性地址计算出来；
+     对每个对应的页表目录项申请一个空闲页，并用页表地址更新页表目录项，
+     最后将父进程页表中各项复制到新进程对应的页表中，也就是说，这个时候，子进程与父进程共享物理内存。
+  6）更新task_struct中的文件信息：文件打开次数加1，父进程的当前目录引用数加1。
+  7）设置TSS和LDT描述符项：在全局描述符表（GDT）中设置新任务的TSS描述符项和LDT段的描述符项，
+     使TSS描述符项和LDT描述符项分别指向task_struct的TSS结构和LDT结构。
+  8）将任务设置为就绪状态，向当前进程（父进程）返回新进程号。 可以看出，fork()中，
+     内核并不立刻为新进程分配代码和数据物理内存页，新进程与父进程共同使用父进程已有的代码和数据物理内存页面。
+     只有当以后执行过程中由一个进程一写方式访问内存时候被访问的内存页面才会在写操作之前
+     被复制到新申请的内存页面中。
+  另外在fork的最后是将任务设置成了就绪状态，由于fork（）是一个系统调用，在系统调用部分system_call.s，
+  可以看到在系统函数返回后，会调用调度函数schedule（），在schedule()中，就会检测到新进程的就绪状态，
+  并用switch_to()切换到新进程进行执行。
+
 5)简述用pthread进行多线程编程的方法和要点？
+  1.Thread由下面部分组成：
+    a.Thread ID
+    b.Stack
+    c.Policy
+    d.Signal mask
+    e.Errno
+    f.Thread-Specific Data
+  2.创建线程int pthread_create( pthread_t *restrict tidp, const pthread_attr_t *restrict attr,
+                          void *(*start_rtn)(void *), void *restrict arg);
+    void *(*start_rtn)(void *)线程函数，void *restrict arg：传入给线程函数的参数
+  3.线程的终止
+    a.在线程函数中return
+    b.被同一进程中的另外的线程Cancel掉
+    c.线程调用pthread_exit函数
+  fork    pthread_create       创建新的控制流
+  exit    pthread_exit         退出已有的制流
+  waitpid pthread_join         等待控制流并获得结束代码
+  atexit  pthread_cleanup_push 注册在控制流退出时候被调用的函数
+  getpid  pthread_self         获得控制流的id
+  abort   pthread_joincancel   请求非正常退出
+          pthread_detach       线程进入Detach状态
+  4.Thread Synchronization
+    int pthread_mutex_init( pthread_mutex_t *restrict mutex, const
+            pthread_mutexattr_t *restrict attr);
+    int pthread_mutex_destroy(pthread_mutex_t *mutex);
+    int pthread_mutex_lock(pthread_mutex_t *mutex);
+    int pthread_mutex_trylock(pthread_mutex_t *mutex);
+    int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
+    int pthread_cond_init( pthread_cond_t *restrict cond, const pthread_condxattr_t *restrict attr);
+    int pthread_cond_destroy(pthread_cond_t *cond);
+    int pthread_cond_wait( pthread_cond_t *restrict cond,
+            pthread_mutex_t *restrict mutex);
+    int pthread_cond_timedwait( pthread_cond_t *restrict cond,
+            pthread_mutex_t *restrict mutex,
+            const struct timespec *restrict timeout);
 6)dup的原理？
+  它会把原来的文件状态复制并返回新的文件描述符
 7)简述Linux标准输入输出和重定向？
+  默认打开3个文件描述符，分别是：标准输入standard input 0,正确输出standard
+  output 1,错误输出：error output 2
+  test.sh  1>suc.txt 2>err.txt
+
 8)简述Linux文件与目录的时间状态(mtime, ctime, atime)的含义？
 9)谈谈对inode的理解？
+  inode是什么？
+     理解inode，要从文件储存说起。
+     文件储存在硬盘上，硬盘的最小存储单位叫做"扇区"（Sector）。每个扇区储存512字节（相当于0.5KB）。
+     操作系统读取硬盘的时候，不会一个个扇区地读取，这样效率太低，而是一次性连续读取多个扇区，
+     即一次性读取一个"块"（block）。这种由多个扇区组成的"块"，是文件存取的最小单位。
+     "块"的大小，最常见的是4KB，即连续八个sector组成一个 block。
+     文件数据都储存在"块"中，那么很显然，我们还必须找到一个地方储存文件的元信息，比如文件的创建者、
+     文件的创建日期、文件的大小等等。这种储存文件元信息的区域就叫做inode，中文译名为"索引节点"。
+   
+  inode包含文件的元信息，具体来说有以下内容：
+     * 文件的字节数
+     * 文件拥有者的User ID
+     * 文件的Group ID
+     * 文件的读、写、执行权限
+     *文件的时间戳，共有三个：ctime指inode上一次变动的时间，
+                              mtime指文件内容上一次变动的时间，
+                              atime指文件上一次打开的时间。
+     * 链接数，即有多少文件名指向这个inode
+     * 文件数据block的位置
+  可以用stat命令，查看某个文件的inode信息：
+     stat example.txt
+  总之，除了文件名以外的所有文件信息，都存在inode之中。至于为什么没有文件名，下文会有详细解释。
 10)是否用过git和git工作流程简述？
 
 C：
@@ -102,9 +192,21 @@ C：
 7) 什么是字节对齐以及作用？
 
 8) delete 和 delete[]区别？
+   c++中释放new分配的内存，delete释放变量，delete释放数组
 9) extern "C" 作用？
+   extern "C"的主要作用就是为了能够正确实现C++代码调用其他C语言代码。加上extern
+   "C"后，会指示编译器这部分代码按C语言的进行编译，而不是C++的。
 10)fwirte和write区别？
+   fopen是标准c里定义的,open是POSIX中定义的.
+   fread/fwrite，则系统自动分配缓存
+   系统调用write的效率取决于你buf的大小和你要写入的总数量，
+   如果buf太小，你进入内核空间的次数大增，效率就低下。而fwrite会替你做缓存，
+   减少了实际出现的系统调用，所以效率比较高。
 12)ctrl+c 发什么信号(SIGINT)?
+   你说的control+c实际上是终端把一个SIGINT信号发给了进程，而如果你用kill指令而不带任何参数，
+   实际上是发送了一个SIGKILL信号。但是kill指令是可以发送指定信号的，比如你要发一个SIGINT信号，可以这样
+          kill -s SIGINT process_name
+
 13)print %d 打印一个8byte整数，结果是什么？
 
 
