@@ -95,6 +95,11 @@
   test.sh  1>suc.txt 2>err.txt
 
 8)简述Linux文件与目录的时间状态(mtime, ctime, atime)的含义？
+  atime -lu access or use (-u) 
+  ctime -lc (time of last modification of file status information)
+  mtime -l  modify time
+
+
 9)谈谈对inode的理解？
   inode是什么？
      理解inode，要从文件储存说起。
