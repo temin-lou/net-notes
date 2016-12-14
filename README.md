@@ -67,6 +67,6 @@
 # miner
     fish2man    miner2cpu   sina
 
-# G618 2016-06-08 948 12 05D
-# G618 2016-06-12 915 14 02B
-# G618 2016-06-12 899 11 02D
+# https://leetcode.com temin leet89
+# 
+# 
