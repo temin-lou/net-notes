@@ -29,6 +29,16 @@ struct BinaryTreeNode {
 };
 struct BinaryTreeNode *buildTree(int *preorder, int preorderLen, int *inorder, int inorderLen)
 {
+    struct BinaryTreeNode *binTree;
+
+    binTree = (struct BinaryTreeNode *) malloc (sizeof(struct BinaryTreeNode));
+    memset(binTree, 0, sizeof(struct BinaryTreeNode));
+    if ( (preorderLen == 1) && (inorderLen == 1)) {
+
+
+    }
+
+    
 
 }
 
