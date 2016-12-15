@@ -18,9 +18,12 @@
  */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-int preOrder[] = {1,2,4,3,5,6};
-int inOrder[]  = {4,2,1,5,6,3};
+#ifdef NULL
+    #undef NULL
+    #define NULL 0
+#endif
 
 struct BinaryTreeNode {
     int value;
@@ -30,57 +33,61 @@ struct BinaryTreeNode {
 struct BinaryTreeNode *buildTree(int *preorder, int preorderLen, int *inorder, int inorderLen)
 {
     struct BinaryTreeNode *binTree;
+    int root;
+    int nLeft, nRight;
+    int *pIn, *pPre;
+
+    if ( (preorderLen == 0) && (inorderLen == 0)) {
+        return NULL;
+    }
+    //if ( (preorderLen == 1) && (inorderLen == 1)) {
+    printf("n=%d pre= ", preorderLen);
+    for (nLeft = 0; nLeft <= preorderLen - 1; nLeft++)
+    {
+        printf("%d, ", preorder[nLeft]);
+    }
+    printf("\n");
+
+    printf("n=%d in= ", inorderLen);
+    for (nLeft = 0; nLeft <= inorderLen - 1; nLeft++)
+    {
+        printf("%d, ", inorder[nLeft]);
+    }
+    printf("\n");
+
 
     binTree = (struct BinaryTreeNode *) malloc (sizeof(struct BinaryTreeNode));
-    memset(binTree, 0, sizeof(struct BinaryTreeNode));
-    if ( (preorderLen == 1) && (inorderLen == 1)) {
-
-
+    memset(binTree, NULL, sizeof(struct BinaryTreeNode));
+    binTree->value = *preorder;
+    root = *preorder;
+    for (nLeft = 0; nLeft <= inorderLen - 1; nLeft++) 
+    {
+        if (inorder[nLeft] == root) break;
     }
 
-    
+    pIn  = inorder;
+    pPre = preorder + 1; 
+    binTree->left  = buildTree( pPre, nLeft, pIn, nLeft );
+    pIn  = inorder + nLeft + 1;
+    pPre = preorder + nLeft + 1;
 
+    nRight = preorderLen - nLeft - 1;
+    binTree->right = buildTree( pPre, nRight, pIn, nRight );
+
+    printf ("var=%d, %p, %p\n", binTree->value, binTree->left, binTree->right);
+    return binTree;
 }
 
 int main(int argc, char **argv)
 {
+    //int preOrder[] = {1,2,4,3,5,6};
+    //int inOrder[]  = {4,2,1,5,6,3};
+    int preOrder[] = {1,2};
+    int inOrder[]  = {1,2};
+    struct BinaryTreeNode *tree;
+
+    //tree = buildTree(preOrder, 6, inOrder, 6);
+    tree = buildTree(preOrder, 2, inOrder, 2);
     return 0;
 }
 
-////根据前序和中序遍历写出后序遍历
-//int t1[1001],t2[1001];
-//void sousuo(int a,int b,int n,int flag)
-//{
-//
-//    if(n==1)//如果存在左子树或右子树就直接输出
-//    {
-//        printf("%d ",t1[a]);
-//        return ;
-//    }
-//    else if(n<=0)//如果不存在左子树或右子树就返回上一层
-//        return ;
-//    int i;//继续罚分为左子树和右子树
-//    for(i=0;t1[a]!=t2[b+i];i++) ;//找到罚分点也就是根节点
-//    sousuo(a+1,b,i,0);//左子树的遍历
-//    sousuo(a+i+1,b+i+1,n-i-1,0);//右子树的遍历
-//    if(flag==1)//最原始的跟节点
-//        printf("%d",t1[a]);
-//    else//一般的根节点
-//        printf("%d ",t1[a]);
-//}
-//int main()
-//{
-//    int n,i;
-//    while(scanf("%d",&n)!=EOF)
-//    {
-//        for(i=1;i<=n;i++)
-//            scanf("%d",&t1[i]);//t1中存的是前序
-//        for(i=1;i<=n;i++)//t2中存的中序
-//            scanf("%d",&t2[i]);
-//        sousuo(1,1,n,1);
-//        printf("\n");
-//
-//    }
-//    return 0;
-//}
-//
