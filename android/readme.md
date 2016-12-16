@@ -76,6 +76,7 @@
         userdebug     preferred for debugging（适合调试）
         eng 	      development configuration with additional debugging tools（有额外的调试工具）
      make -j4
+     make into：out/target/product/generic
      驱动配置:
      a.balabala
      b.连接手机，打开USB调试，进入bootloader模式：
