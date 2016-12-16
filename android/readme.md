@@ -1,10 +1,11 @@
 # Linux下Android ADB驱动安装详解
-Linux下使用手机USB调试模式连接ADB进行Android程序的调试
-
+    
+    Linux下使用手机USB调试模式连接ADB进行Android程序的调试
     步骤
     1. 确认手机连接上电脑，lsusb查看下设备记录。
     $ lsusb
-    Bus 001 Device 006: ID 04e8:6860 Samsung Electronics Co., Ltd GT-I9100 Phone [Galaxy S II], GT-I9300 Phone [Galaxy S III], GT-P7500 [Galaxy Tab 10.1]
+    Bus 001 Device 006: ID 04e8:6860 Samsung Electronics Co., Ltd GT-I9100 Phone [Galaxy S II], 
+                        GT-I9300 Phone [Galaxy S III], GT-P7500 [Galaxy Tab 10.1]
     2. 然后在/etc/udev/rules.d/下创建一个配置文件: 70-android.rules
     文件里添加如下配置参数:
     SUBSYSTEM=="usb", SYSFS{"High Tech Computer Corp."}=="04e8", MODE="0666"
@@ -62,10 +63,9 @@ Linux下使用手机USB调试模式连接ADB进行Android程序的调试
          cd .repo/manifests
          git branch -a | cut -d / -f 3
          
-＃android 编译
-     
-    source build/envsetup.sh
-    lunch aosp_arm-eng
+# android 编译
+     source build/envsetup.sh
+     lunch aosp_arm-eng
         BUILD NAME 	  DEVICE 	       NOTES
         aosp_arm 	  ARM emulator 	包括所有语言、APP和输入法的配置
         aosp_maguro   maguro 	    运行在Galaxy Nexus GSM/HSPA+ (“maguro”)上
@@ -75,15 +75,13 @@ Linux下使用手机USB调试模式连接ADB进行Android程序的调试
         user 	      limited access; suited for production（有权限限制，适合产品级）
         userdebug     preferred for debugging（适合调试）
         eng 	      development configuration with additional debugging tools（有额外的调试工具）
-    make -j4
-    驱动配置:
-         balabala
-    b.连接手机，打开USB调试，进入bootloader模式：
+     make -j4
+     驱动配置:
+     a.balabala
+     b.连接手机，打开USB调试，进入bootloader模式：
         adb reboot bootloader
         fastboot oem unlock
         fastboot flash boot boot.img
         fastboot flash system system.img
         fastboot flash userdata userdata.img
-    
-
      
