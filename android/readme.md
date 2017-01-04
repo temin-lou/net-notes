@@ -85,4 +85,12 @@
         fastboot flash boot boot.img
         fastboot flash system system.img
         fastboot flash userdata userdata.img
-     
+        
+# android 编译步骤
+    repo init -b android_5.1.1_r5
+    repo sync
+    source build/envsetup.sh
+    lunch aosp_arm-eng
+    make update-api
+    make -j4
+    
