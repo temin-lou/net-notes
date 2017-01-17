@@ -12,3 +12,5 @@
 
     awk '{print $8}'  取出一列
 # gentoo
+    make CONFIG_BLK_DEV_NBD=m M=drivers/block
+    cp drivers/block/nbd.ko /lib/modules/$(uname -r)/kernel/drivers/block/
