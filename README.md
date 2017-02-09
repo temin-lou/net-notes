@@ -28,26 +28,22 @@
  spicy 用法，命令
 
 # mail
-
- tingtongor@sina.com
- topquark@yeah.net yeah11
- bitcon@126.com M
- picocoin@sina.com   mxxl@xxxqq    
-
+    tingtongor@sina.com
+    topquark@yeah.net yeah11
+    bitcon@126.com M
+    picocoin@sina.com   mxxl@xxxqq
+    todoyu@yeah.net jaya2017
 # gravatar 
-
- tingtongor@sina.com  wp
- topquark@yeah.net
+    tingtongor@sina.com  wp
+    topquark@yeah.net
 
 # git 
-
- louqinghui git    web
- louqh      git    all
- tingtongor git    test
+    louqinghui git    web
+    louqh      git    all
+    tingtongor git    test
  
 # virsh
- 
- libvirt配置使用方法
+    libvirt配置使用方法
     
 # bitcoin
 
