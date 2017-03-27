@@ -33,6 +33,7 @@
     bitcon@126.com M
     picocoin@sina.com   mxxl@xxxqq
     todoyu@yeah.net jaya2017
+    plus_2@yeah.net plus@day
 # gravatar 
     tingtongor@sina.com  wp
     topquark@yeah.net
