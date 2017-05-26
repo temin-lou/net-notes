@@ -63,7 +63,9 @@
     
 # miner
     fish2man    miner2cpu   sina
-
+# oracle
+    topquark@yeah.net  oracle11
+  
 # https://leetcode.com temin leet89
 # 
 # 
