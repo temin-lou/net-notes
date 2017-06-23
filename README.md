@@ -68,4 +68,4 @@
   
 # https://leetcode.com temin leet89
 # 
-# 
+# xinput set-int-prop 14 "Device Enabled" 8 0
