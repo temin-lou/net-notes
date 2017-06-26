@@ -34,6 +34,7 @@
     picocoin@sina.com   mxxl@xxxqq
     todoyu@yeah.net jaya2017
     plus_2@yeah.net plus@day
+    jaya_bugs@sina.com sina11   
 # gravatar 
     tingtongor@sina.com  wp
     topquark@yeah.net
