@@ -1,4 +1,5 @@
 https://docs.openstack.org/developer/devstack/
+
 ＃Add Stack User
 
     $ sudo useradd -s /bin/bash -d /opt/stack -m stack
