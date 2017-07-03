@@ -1,4 +1,5 @@
 https://docs.openstack.org/developer/devstack/
+http://www.chenshake.com/page/6/
 
 ＃Add Stack User
 
@@ -8,6 +9,7 @@ https://docs.openstack.org/developer/devstack/
 ＃Download DevStack
      
     $ git clone https://git.openstack.org/openstack-dev/devstack
+    $ git clone http://git.trystack.cn/openstack-dev/devstack.git
     $ cd devstack
 ＃Create a local.conf
 
@@ -16,6 +18,9 @@ https://docs.openstack.org/developer/devstack/
     DATABASE_PASSWORD=$ADMIN_PASSWORD
     RABBIT_PASSWORD=$ADMIN_PASSWORD
     SERVICE_PASSWORD=$ADMIN_PASSWORD
+    
+    wget -O - https://raw.githubusercontent.com/shake/devstack/gh-pages/local.conf-sample-mitaka > ./local.conf
+    mitaka-->newton
 #Start the install
 
     ./stack.sh
