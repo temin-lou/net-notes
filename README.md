@@ -28,26 +28,24 @@
  spicy 用法，命令
 
 # mail
-
- tingtongor@sina.com
- topquark@yeah.net yeah11
- bitcon@126.com M
- picocoin@sina.com   mxxl@xxxqq    
-
+    tingtongor@sina.com
+    topquark@yeah.net yeah11
+    bitcon@126.com M
+    picocoin@sina.com   mxxl@xxxqq
+    todoyu@yeah.net jaya2017
+    plus_2@yeah.net plus@day
+    jaya_bugs@sina.com sina11   
 # gravatar 
-
- tingtongor@sina.com  wp
- topquark@yeah.net
+    tingtongor@sina.com  wp
+    topquark@yeah.net
 
 # git 
-
- louqinghui git    web
- louqh      git    all
- tingtongor git    test
+    louqinghui git    web
+    louqh      git    all
+    tingtongor git    test
  
 # virsh
- 
- libvirt配置使用方法
+    libvirt配置使用方法
     
 # bitcoin
 
@@ -66,7 +64,9 @@
     
 # miner
     fish2man    miner2cpu   sina
-
+# oracle
+    topquark@yeah.net  oracle11
+  
 # https://leetcode.com temin leet89
 # 
-# 
+# xinput set-int-prop 14 "Device Enabled" 8 0
