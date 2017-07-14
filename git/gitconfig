@@ -17,3 +17,5 @@
     standup = log --since '1 day ago' --oneline --author (YOUREMAIL)
 [push]
 	default = simple
+[receive]
+        denyCurrentBranch = ignore

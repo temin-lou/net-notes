@@ -65,3 +65,8 @@ Create git server
         git checkout develop
         git merge --no-ff hotfix-1.2.1
         git branch -d hotfix-1.2.1
+
+# github pull push 
+
+        git clone http://github.com/louqh/net-notes.git
+        git remote set-url origin git@github.com:louqh/net-notes.git
