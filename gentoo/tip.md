@@ -9,8 +9,12 @@
 
 # cu命令
     uucp 在 gentoo 的taylor-uucp包里
-
     awk '{print $8}'  取出一列
+
 # gentoo
     make CONFIG_BLK_DEV_NBD=m M=drivers/block
     cp drivers/block/nbd.ko /lib/modules/$(uname -r)/kernel/drivers/block/
+
+# 去掉注释和空行
+    grep -v "^#" keystone.conf.example | grep -v "^$" > keystone.conf
+    
