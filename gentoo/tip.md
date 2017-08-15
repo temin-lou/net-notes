@@ -17,4 +17,6 @@
 
 # 去掉注释和空行
     grep -v "^#" keystone.conf.example | grep -v "^$" > keystone.conf
-    
+ 
+# 挂载macos文件系统，可读写
+    mount -t hfsplus -o force,rw /dev/sdb1 /media/mac
