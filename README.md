@@ -6,6 +6,11 @@
     111.113.6.18
     59.50.108.6
     http://joshworth.com/dev/pixelspace/pixelspace_solarsystem.html
+
+# n2n
+
+    88.86.108.50:82
+    58.252.61.130:53 
  
 # git directory 
 
