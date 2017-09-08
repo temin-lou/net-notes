@@ -12,4 +12,6 @@
 
     ssh root@106.38.34.53 -p 8022
     ssh root@106.38.34.53 -p 8122
-
+# lijun
+    lijun@zgsvdata.com  96Z#76`2`K9A4
+    183.60.237.52   `2`#`2`A3c9msYuA
