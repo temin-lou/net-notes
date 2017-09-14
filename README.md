@@ -6,6 +6,7 @@
     111.113.6.18
     59.50.108.6
     http://joshworth.com/dev/pixelspace/pixelspace_solarsystem.html
+    dns  jaya_link aliyun11 www#net#cn jaya_dns@sina.com
 
 # n2n
 
@@ -40,7 +41,8 @@
     picocoin@sina.com   mxxl@xxxqq
     todoyu@yeah.net jaya2017
     plus_2@yeah.net plus@day
-    jaya_bugs@sina.com sina11   
+    jaya_bugs@sina.com sina11
+    jaya_dns@sina.com  sina11
 # gravatar 
     tingtongor@sina.com  wp
     topquark@yeah.net
