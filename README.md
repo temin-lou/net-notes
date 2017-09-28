@@ -36,7 +36,7 @@
  spicy 用法，命令
 
 # mail
-    tingtongor@sina.com
+    tingtongor@sina.com sina11
     topquark@yeah.net yeah11
     bitcon@126.com M
     picocoin@sina.com   mxxl@xxxqq
