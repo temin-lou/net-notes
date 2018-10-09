@@ -9,8 +9,7 @@ Create a new repository on the command line
     git push -u origin master
 
 
-# git server
-Create git server
+# Create git server
     On the server:
         SSH Keys 
         /etc/conf.d/git-daemon 
