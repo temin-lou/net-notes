@@ -1,5 +1,5 @@
- 1. do not use tabs.
- 2. indentation is two spaces per level (i.e. per tab).
+ 1. do not use tabs.（不要用tab键）
+ 2. indentation is two spaces per level (i.e. per tab).（每层缩进两个空格）
  3. end debug messages with a trailing newline (\n).
  4. one space between keyword and opening bracket.
  5. no space between function and opening bracket.
