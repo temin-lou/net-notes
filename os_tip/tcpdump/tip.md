@@ -26,5 +26,7 @@
     urgent 表明数据包中是否有紧急指针
     options是选项
 # tcpdump 示例
-    tcpdump tcp -n -i enp3s0 -t  and host 192.168.0.31 and port ! 22 -X
+    tcpdump tcp -n -i enp3s0 -t and host 192.168.0.31 and port ! 22 -X
+    tcpdump udp -n -i ens35  -t and host 192.168.0.63
+    
 
