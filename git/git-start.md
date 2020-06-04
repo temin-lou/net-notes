@@ -37,7 +37,8 @@ Create a new repository on the command line
         git chechout -b myfeature develop
         balabala
         git chechout develop
-        git merge --no-ff myfeature
+        git merge --no-ff myfeature  // --no-ff 保留分支的commit历史
+                                     // --squash 把多次分支commit历史压缩为一次
         git branch -d myfeature
         git push origin develop
 
