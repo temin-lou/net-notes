@@ -9,6 +9,18 @@
 #define OK            0
 #define ERROR         1
 
+/* 宏命名推荐使用全字母大写加'_'分隔的风格 */
+#define OS_UNIX
+#define OS_LINUX
+#define OS_WINNT
+
+/* 除非你想用条件编译将某些功能变为可选项 */
+#ifdef  USE_TCMALLOC
+#define my_malloc tcmalloc
+#else
+#define my_malloc malloc
+#endif
+
 int do_scan_port (const char *ip, const char *port)
 {
     int s;
